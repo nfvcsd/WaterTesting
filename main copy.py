@@ -13,12 +13,12 @@ from openpyxl.chart import (
 from openpyxl.chart.axis import DateAxis
 
 wb_path = input("File: ").strip("'")
-outputfile = input("Output File Name (With .xml extension): ")
+outputfile = input("Output File Name (With .xlsx extension): ")
 def Average(list: list) -> float:
     return sum(list) / len(list)
 with open(wb_path) as fd:
     doc = xmltodict.parse(fd.read())
-#print(doc['Datalog']['Entry'])
+print(doc['Datalog']['Entry'])
 i = 0
 Data = {}
 Date = ''
@@ -29,8 +29,13 @@ for entry in doc['Datalog']['Entry']:
         except ValueError:
             try:
                 Date = datetime.strptime(entry['Time'], '%m/%d/%Y %H:%M:%S')
-            except:
-                Date = datetime.strptime(entry['Time'], '%Y/%m/%d %H:%M:%S')
+            except ValueError:
+                try:
+                    Date = datetime.strptime(entry['Time'], '%Y/%m/%d %H:%M:%S')
+                except ValueError:
+                    Date = datetime.strptime(entry['Time'], '%Y/%m/%d %H:%M:%S %p')
+
+
         Day = Date.strftime('%m-%d-%Y')
         if Day not in Data:
             Data[Day] = {'CL2': [], "Flow": []}

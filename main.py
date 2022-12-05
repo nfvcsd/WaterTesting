@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
+import xmltodict
 from collections import defaultdict
 from datetime import datetime
 # import typing # comes by default now
 from openpyxl import load_workbook
+
 from openpyxl.workbook.workbook import Workbook
 from openpyxl.chart import (
     LineChart,
@@ -12,48 +14,49 @@ from openpyxl.chart.axis import DateAxis
 
 wb_path = input("File: ").strip("'")
 outputfile = input("Output File Name (With .xlsx extension): ")
-# print(wb_path)
-wb = load_workbook(filename=wb_path)
-# Don't actually need this. It automatically comes as a datetime object
-def ConvertStringToDate(string: str) -> datetime:
-    date_time_obj = datetime.strptime(string, '%y/%m/%d %H:%M:%S')
-    return date_time_obj
 def Average(list: list) -> float:
     return sum(list) / len(list)
-sheet_ranges = wb['Sheet1']
-offset = 0
-date = ''
-CL2data = defaultdict(list)
-FlowData = defaultdict(list)
-for x in sheet_ranges['A']:
-    if offset >= 16:
-        cl2 = f'B{offset}'
-        flow = f"C{offset}"
-        CL2data[str(x.value.date())].append(sheet_ranges[cl2].value)
-        FlowData[str(x.value.date())].append(sheet_ranges[flow].value)
-
-    offset +=1
-# print(dict(CL2data))
-# print(dict(FlowData))
-
+with open(wb_path) as fd:
+    doc = xmltodict.parse(fd.read())
+print(doc['Datalog']['Entry'])
+i = 0
 Data = {}
-for key, value in dict(CL2data).items():
-    if key not in Data:
-        Data[key] = {}
-    dayCL2Average = Average(value)
-    Data[key]["CL2"] = dayCL2Average
-    # print(f"{key}: {dayCL2Average}")
-for key, value in dict(FlowData).items():
-    if key not in Data:
-        Data[key] = {}
-    dayFlowAverage = Average(value)
-    Data[key]["Flow"] = dayFlowAverage
-    # print(f"{key}: {dayFlowAverage}")
-for key, value in Data.items():
-    print(f"{key}: {value}")
+Date = ''
+for entry in doc['Datalog']['Entry']:
+    if i >= 2:
+        try:
+            Date = datetime.strptime(entry['Time'], '%m/%d/%Y %I:%M:%S %p')
+        except ValueError:
+            try:
+                Date = datetime.strptime(entry['Time'], '%m/%d/%Y %H:%M:%S')
+            except ValueError:
+                try:
+                    Date = datetime.strptime(entry['Time'], '%Y/%m/%d %H:%M:%S')
+                except ValueError:
+                    Date = datetime.strptime(entry['Time'], '%Y/%m/%d %H:%M:%S %p')
+
+
+        Day = Date.strftime('%m-%d-%Y')
+        if Day not in Data:
+            Data[Day] = {'CL2': [], "Flow": []}
+        if len(entry['CH1']) > 1:
+            Data[Day]['CL2'].append(float(entry['CH1'][0]['Data']))
+        else:
+            Data[Day]['CL2'].append(float(entry['CH1']['Data']))
+        if len(entry['CH2']) > 1:
+            Data[Day]['Flow'].append(float(entry['CH2'][0]['Data']))
+        else:
+            Data[Day]['Flow'].append(float(entry['CH2']['Data']))
+    i+=1
+
+for entry, value in Data.items():
+    # print(entry, value)
+    # print(value['CL2'])
+    value['CL2'] = Average(value['CL2'])
+    value['Flow'] = Average(value['Flow'])
+# print(Data)
 
 # Create New Excel Doc Here
-
 nb = Workbook()
 dest_filename = outputfile
 ws1 = nb.active
@@ -78,7 +81,7 @@ c1.style = 12
 c1.y_axis.title = "Value"
 c1.y_axis.crossAx = 500
 c1.x_axis = DateAxis(crossAx=100)
-c1.x_axis.number_format = 'd-mmm'
+c1.x_axis.number_format = 'd-mm-yyyy'
 c1.x_axis.majorTimeUnit = "days"
 c1.x_axis.title = "Date"
 

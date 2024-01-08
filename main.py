@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import xmltodict
 from collections import defaultdict
 from datetime import datetime
@@ -14,11 +15,14 @@ from openpyxl.chart.axis import DateAxis
 
 wb_path = input("File: ").strip("'")
 outputfile = input("Output File Name (With .xlsx extension): ")
+
 def Average(list: list) -> float:
     return sum(list) / len(list)
+
 with open(wb_path) as fd:
     doc = xmltodict.parse(fd.read())
 print(doc['Datalog']['Entry'])
+
 i = 0
 Data = {}
 Date = ''

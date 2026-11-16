@@ -8,8 +8,8 @@ import sys
 from pathlib import Path
 from xml.etree.ElementTree import ParseError
 
-from water_report.excel import build_workbook
-from water_report.parse import Datalog, read_datalog
+from water_report.excel import build_workbook, report_filename
+from water_report.parse import read_datalog
 from water_report.summarize import summarize_by_day
 
 log = logging.getLogger("water_report")
@@ -31,7 +31,7 @@ def main(argv: list[str] | None = None) -> int:
         log.error("No readings found in %s", args.datalog)
         return 1
 
-    output = args.output or args.output_dir / default_output_name(datalog)
+    output = args.output or args.output_dir / report_filename(datalog)
     if output.exists() and not args.force:
         log.error("%s already exists; use --force to overwrite it", output)
         return 1
@@ -52,13 +52,6 @@ def main(argv: list[str] | None = None) -> int:
                 ", ".join(day.strftime("%m/%d/%Y") for day in low_days),
             )
     return 0
-
-
-def default_output_name(datalog: Datalog) -> str:
-    """Name a report by its date range, e.g. 2023-12-28_to_2024-01-17.xlsx."""
-    first = datalog.readings[0].timestamp.date()
-    last = datalog.readings[-1].timestamp.date()
-    return f"{first.isoformat()}_to_{last.isoformat()}.xlsx"
 
 
 def _parse_args(argv: list[str] | None) -> argparse.Namespace:

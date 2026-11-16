@@ -86,6 +86,13 @@ def build_workbook(
     return workbook
 
 
+def report_filename(datalog: Datalog) -> str:
+    """Name a report by its date range, e.g. 2023-12-28_to_2024-01-17.xlsx."""
+    first = datalog.readings[0].timestamp.date()
+    last = datalog.readings[-1].timestamp.date()
+    return f"{first.isoformat()}_to_{last.isoformat()}.xlsx"
+
+
 def _write_summary_table(
     sheet: Worksheet,
     summaries: list[DailySummary],

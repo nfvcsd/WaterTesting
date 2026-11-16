@@ -135,3 +135,7 @@ dmypy.json
 
 # Generated reports (*.xlsx is ignored above); keep them on the district share, not in git
 reports/
+
+# Built GitHub Pages site and its download cache (scripts/build_site.py)
+_site/
+.site-cache/

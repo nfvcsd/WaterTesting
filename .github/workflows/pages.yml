@@ -1,0 +1,55 @@
+name: Pages
+
+# Builds the browser converter, tests it in Chromium, and deploys it to
+# GitHub Pages from main. Pull requests build and test but don't deploy.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: uv sync --locked --group e2e
+      - name: Build site
+        run: uv run scripts/build_site.py
+      - name: Install Chromium
+        run: uv run playwright install --with-deps chromium
+      - name: Browser tests
+        run: uv run pytest tests/e2e
+        env:
+          SITE_DIR: _site
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

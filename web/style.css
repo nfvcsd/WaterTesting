@@ -1,0 +1,347 @@
+/* North Fayette Valley brand: Open Sans, light blue + black, lots of white space. */
+
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/open-sans-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/open-sans-latin-700-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 800;
+  font-display: swap;
+  src: url("assets/fonts/open-sans-latin-800-normal.woff2") format("woff2");
+}
+
+:root {
+  color-scheme: light;
+  --nfv-light-blue: #6ab2e2;
+  --nfv-black: #231f20;
+  --nfv-cool-gray-4: #bcbec0;
+  --nfv-white: #ffffff;
+  --nfv-cool-gray-2: #dad9d7;
+  --nfv-cool-gray-9: #6d6e71;
+  --nfv-navy: #002f6d;
+  --nfv-midnight: #051c2c;
+  --nfv-font: "Open Sans", Arial, sans-serif;
+
+  --error: #a4161a;
+  --warning-bg: #fff4e5;
+  --warning-border: #b25e09;
+  --radius: 6px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--nfv-font);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--nfv-black);
+  background: var(--nfv-white);
+}
+
+.site-header {
+  border-top: 6px solid var(--nfv-light-blue);
+  padding: 24px 16px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.logo {
+  display: block;
+  height: 40px;
+  width: auto;
+  max-width: 100%;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 8px 16px 48px;
+}
+
+h1,
+h2 {
+  margin: 0;
+}
+
+.nfv-headline {
+  text-transform: uppercase;
+  font-weight: 400;
+  font-size: clamp(1.6rem, 5vw, 2.25rem);
+  line-height: 1.15;
+}
+
+.nfv-headline b {
+  font-weight: 800;
+  color: var(--nfv-navy);
+}
+
+.nfv-rule {
+  border: 0;
+  border-top: 1px solid var(--nfv-black);
+  margin: 20px 0;
+}
+
+.lead {
+  font-size: 1.1rem;
+  margin: 0 0 32px;
+}
+
+.step {
+  margin-bottom: 32px;
+}
+
+.step h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.step-number {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--nfv-navy);
+  color: var(--nfv-white);
+  font-size: 0.95rem;
+  font-weight: 800;
+  flex: none;
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--nfv-cool-gray-9);
+}
+
+/* File picker: the whole box is the label, so clicking anywhere opens the dialog. */
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 140px;
+  padding: 24px 16px;
+  border: 2px dashed var(--nfv-cool-gray-4);
+  border-radius: var(--radius);
+  background: #f7f7f6;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.dropzone:hover,
+.dropzone.is-dragging {
+  border-color: var(--nfv-light-blue);
+  background: #eef6fc;
+}
+
+.dropzone:focus-within {
+  outline: 3px solid var(--nfv-navy);
+  outline-offset: 2px;
+}
+
+.dropzone.has-file {
+  border-style: solid;
+  border-color: var(--nfv-navy);
+  background: var(--nfv-white);
+}
+
+/* Visually hidden but still focusable and announced. */
+.dropzone input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.link-text {
+  color: var(--nfv-navy);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.file-name {
+  font-weight: 700;
+  word-break: break-all;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field input {
+  width: 8rem;
+  font: inherit;
+  font-size: 1.05rem;
+  padding: 10px 12px;
+  border: 1px solid var(--nfv-cool-gray-9);
+  border-radius: var(--radius);
+}
+
+.field input:focus {
+  outline: 3px solid var(--nfv-navy);
+  outline-offset: 1px;
+}
+
+.unit {
+  color: var(--nfv-cool-gray-9);
+}
+
+.hint {
+  margin: 8px 0 0;
+  font-size: 0.95rem;
+  color: var(--nfv-cool-gray-9);
+}
+
+button,
+.button-secondary {
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.05rem;
+  border-radius: var(--radius);
+  padding: 12px 24px;
+  cursor: pointer;
+}
+
+button {
+  border: 0;
+  background: var(--nfv-navy);
+  color: var(--nfv-white);
+}
+
+button:hover:not(:disabled) {
+  background: var(--nfv-midnight);
+}
+
+button:focus-visible,
+.button-secondary:focus-visible {
+  outline: 3px solid var(--nfv-light-blue);
+  outline-offset: 2px;
+}
+
+button:disabled {
+  background: var(--nfv-cool-gray-2);
+  color: var(--nfv-cool-gray-9);
+  cursor: not-allowed;
+}
+
+.status {
+  margin: 12px 0 0;
+  min-height: 1.5em;
+  color: var(--nfv-cool-gray-9);
+}
+
+.status.is-busy::before {
+  content: "";
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  margin-right: 8px;
+  vertical-align: -0.1em;
+  border: 2px solid var(--nfv-cool-gray-4);
+  border-top-color: var(--nfv-navy);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.status.is-error {
+  color: var(--error);
+  font-weight: 700;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status.is-busy::before {
+    animation: none;
+  }
+}
+
+.result {
+  border-left: 6px solid var(--nfv-light-blue);
+  background: #f7f7f6;
+  padding: 20px;
+  margin-bottom: 32px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.result h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.result p {
+  margin: 0 0 12px;
+}
+
+.warning {
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+
+.button-secondary {
+  display: inline-block;
+  border: 2px solid var(--nfv-navy);
+  color: var(--nfv-navy);
+  background: var(--nfv-white);
+  text-decoration: none;
+  padding: 8px 18px;
+  font-size: 1rem;
+}
+
+.privacy {
+  border-top: 1px solid var(--nfv-cool-gray-4);
+  padding-top: 20px;
+}
+
+.privacy h2 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.privacy p {
+  margin: 4px 0 0;
+  color: var(--nfv-cool-gray-9);
+}
+
+.site-footer {
+  background: var(--nfv-midnight);
+  color: var(--nfv-white);
+  padding: 20px 16px;
+  font-size: 0.9rem;
+}
+
+.site-footer p {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.site-footer a {
+  color: var(--nfv-light-blue);
+}

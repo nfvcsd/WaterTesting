@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Everything is served from this site; the datalog never leaves the browser. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    >
+    <meta name="referrer" content="no-referrer">
+    <title>Water Report Converter</title>
+    <meta name="description" content="Turn a Hach CL17sc datalog into a daily chlorine and flow report in Excel.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="assets/nfv-logo.svg" type="image/svg+xml">
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <img class="logo" src="assets/nfv-logo.svg" alt="North Fayette Valley Community School District" width="296" height="40">
+    </header>
+
+    <main>
+      <h1 class="nfv-headline"><b>Water report.</b> Daily chlorine and flow.</h1>
+      <hr class="nfv-rule">
+      <p class="lead">
+        Turn a datalog from the CL17sc chlorine analyzer into an Excel report with one row per day
+        and charts for free chlorine and flow rate.
+      </p>
+
+      <form id="report-form" novalidate>
+        <section class="step">
+          <h2><span class="step-number">1</span> Choose the datalog</h2>
+          <label class="dropzone" id="dropzone" for="datalog">
+            <input id="datalog" name="datalog" type="file" accept=".xml,text/xml,application/xml">
+            <span class="dropzone-text">
+              Drag the <strong>.xml</strong> file here, or <span class="link-text">browse</span>
+            </span>
+            <span class="file-name" id="file-name" hidden></span>
+          </label>
+        </section>
+
+        <section class="step">
+          <h2><span class="step-number">2</span> Minimum free chlorine <span class="optional">(optional)</span></h2>
+          <div class="field">
+            <input id="min-chlorine" name="min-chlorine" type="number" inputmode="decimal"
+                   min="0" max="10" step="0.01" aria-describedby="min-chlorine-hint">
+            <span class="unit">mg/L</span>
+          </div>
+          <p class="hint" id="min-chlorine-hint">
+            Days that drop below this are shaded in the report. Use the minimum from the water
+            system's permit.
+          </p>
+        </section>
+
+        <section class="step">
+          <h2><span class="step-number">3</span> Create the report</h2>
+          <button type="submit" id="convert" disabled>Create report</button>
+          <p class="status" id="status" role="status" aria-live="polite">Getting the converter ready…</p>
+        </section>
+      </form>
+
+      <section class="result" id="result" hidden aria-labelledby="result-heading">
+        <h2 id="result-heading">Report ready</h2>
+        <p id="result-summary"></p>
+        <p class="warning" id="result-warning" hidden></p>
+        <a class="button-secondary" id="download-again" href="#" download>Download again</a>
+      </section>
+
+      <aside class="privacy">
+        <h2>Your file stays on this computer</h2>
+        <p>
+          The report is made inside your web browser. The datalog is not uploaded or stored
+          anywhere.
+        </p>
+      </aside>
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        North Fayette Valley Community School District · Technology Department ·
+        <a href="https://github.com/nfvcsd/WaterTesting">Source code</a>
+      </p>
+    </footer>
+  </body>
+</html>

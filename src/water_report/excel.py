@@ -195,6 +195,12 @@ def _line_chart(sheet: Worksheet, spec: ChartSpec, last_row: int) -> LineChart:
     else:
         chart.legend.position = "b"
 
+    # openpyxl leaves "overlay" unset, and Excel then draws the title, axis title
+    # and legend on top of the plot. Turning it off makes Excel reserve space.
+    for element in (chart.title, chart.y_axis.title, chart.legend):
+        if element is not None:
+            element.overlay = False
+
     for index, series in enumerate(chart.series):
         line = series.graphicalProperties.line
         line.solidFill = SERIES_COLORS[index]

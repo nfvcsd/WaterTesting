@@ -52,6 +52,17 @@ def test_one_chart_per_measure_covering_every_day(tmp_path, three_day_datalog):
         assert chart.series[0].cat.numRef.f == "'Daily Summary'!$A$2:$A$4"
 
 
+def test_titles_and_legend_do_not_overlay_the_plot(three_day_datalog):
+    """Excel draws these over the plot area unless overlay is explicitly off."""
+    workbook = build_workbook(
+        three_day_datalog, summarize_by_day(three_day_datalog.readings), "datalog.xml"
+    )
+    for chart in workbook[SUMMARY_SHEET]._charts:
+        assert chart.title.overlay is False
+        assert chart.y_axis.title.overlay is False
+        assert chart.legend is None or chart.legend.overlay is False
+
+
 def test_low_chlorine_is_highlighted_and_counted(tmp_path, three_day_datalog):
     sheet = save_and_reload(tmp_path, three_day_datalog, min_chlorine=0.3)[SUMMARY_SHEET]
 

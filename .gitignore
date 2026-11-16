@@ -129,3 +129,9 @@ dmypy.json
 .pyre/
 .DS_Store
 *.xlsx
+
+# macOS
+.DS_Store
+
+# Generated reports (*.xlsx is ignored above); keep them on the district share, not in git
+reports/
